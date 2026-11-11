@@ -1,0 +1,23 @@
+/* Plots page (shared popup styles live in components.css) */
+
+.card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.card-head > div > p {
+    margin-top: 4px;
+}
+
+.card-head > button {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .card-head {
+        flex-direction: column;
+    }
+}
