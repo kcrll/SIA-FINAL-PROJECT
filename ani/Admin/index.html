@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin · Ani</title>
+    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body data-page="admin" data-shell="admin">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+        <header class="page-head">
+            <div>
+                <h1 id="viewTitle">Dashboard</h1>
+                <p id="viewSub"></p>
+            </div>
+            <div id="viewActions"></div>
+        </header>
+
+        <div id="loadError" class="error-box" hidden></div>
+
+        <!-- Overview -->
+        <section id="view-overview" class="view">
+            <div class="stats" id="stats"></div>
+            <div class="card">
+                <div class="card-head"><div><h2>Recent activity</h2><p>The latest actions across the system.</p></div></div>
+                <ul class="activity" id="recentLogs"></ul>
+            </div>
+        </section>
+
+        <!-- Users -->
+        <section id="view-users" class="view" hidden>
+            <div class="card">
+                <div class="toolbar">
+                    <label class="search">
+                        <i data-icon="search" data-size="16"></i>
+                        <input class="input" type="search" id="userSearch" placeholder="Search users" aria-label="Search users">
+                    </label>
+                    <button type="button" class="btn" id="addUserBtn"><i data-icon="plus"></i> Add user</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Plots</th><th>Joined</th><th></th></tr></thead>
+                        <tbody id="userBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plots -->
+        <section id="view-plots" class="view" hidden>
+            <div class="card">
+                <div class="toolbar">
+                    <p class="hint" style="margin:0">Select a plot name to see its details.</p>
+                    <button type="button" class="btn" id="addPlotBtn"><i data-icon="plus"></i> Add plot</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Plot</th><th>Owner</th><th>Status</th><th>Variety</th><th>Expected harvest</th><th></th></tr></thead>
+                        <tbody id="plotBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Maintenance -->
+        <section id="view-maintenance" class="view" hidden>
+            <div class="card">
+                <div class="card-head">
+                    <div><h2>Database backup</h2><p>Download every table as an SQL file you can import again later.</p></div>
+                    <a class="btn" href="../Admin/backup.php"><i data-icon="download" data-size="17"></i> Download backup</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-head">
+                    <div><h2>Activity logs</h2><p>The latest 100 entries.</p></div>
+                    <button type="button" class="btn btn-danger" id="clearLogsBtn"><i data-icon="trash" data-size="16"></i> Clear logs</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                        <tbody id="logBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- User -->
+    <div class="modal" id="userModal" hidden>
+        <form class="modal-card" id="userForm" role="dialog" aria-modal="true" aria-labelledby="userTitle">
+            <div class="modal-head">
+                <h2 id="userTitle">Add user</h2>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <input type="hidden" name="id">
+                <label class="field full"><span>Full name</span><input name="full_name" required maxlength="100"></label>
+                <label class="field"><span>Username</span><input name="username" required maxlength="30" autocomplete="off"></label>
+                <label class="field"><span>Phone</span><input type="tel" name="phone"></label>
+                <label class="field"><span>Role</span>
+                    <select name="role"><option value="user">Farmer</option><option value="admin">Administrator</option></select>
+                </label>
+                <label class="field" id="passwordField"><span>Password</span><input type="password" name="password" minlength="6" autocomplete="new-password"></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Reset password -->
+    <div class="modal" id="passwordModal" hidden>
+        <form class="modal-card" id="passwordForm" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+            <div class="modal-head">
+                <div><h2 id="passwordTitle">Reset password</h2><p id="passwordFor"></p></div>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="id">
+                <label class="field"><span>New password</span><input type="password" name="password" minlength="6" required autocomplete="new-password"></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Update password</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add plot -->
+    <div class="modal" id="addPlotModal" hidden>
+        <form class="modal-card" id="addPlotForm" role="dialog" aria-modal="true" aria-labelledby="addPlotTitle">
+            <div class="modal-head">
+                <h2 id="addPlotTitle">Add plot</h2>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <label class="field full"><span>Owner</span><select name="user_id" id="ownerSelect" required></select></label>
+                <label class="field"><span>Plot name</span><input name="name" required maxlength="100"></label>
+                <label class="field"><span>Status</span>
+                    <select name="status"><option>Available</option><option>Planted</option><option>Maintenance</option></select>
+                </label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Add plot</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Plot details -->
+    <div class="modal" id="detailModal" hidden>
+        <div class="modal-card wide" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+            <div class="modal-head">
+                <h2 id="detailTitle">Plot</h2>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body" id="detailBody"></div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Close</button>
+                <button type="button" class="btn" id="detailPlant"><i data-icon="sprout" data-size="16"></i> New planting</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planting -->
+    <div class="modal" id="plantingModal" hidden>
+        <form class="modal-card" id="plantingForm" role="dialog" aria-modal="true" aria-labelledby="plantingTitle">
+            <div class="modal-head">
+                <div><h2 id="plantingTitle">New planting</h2><p id="plantingPlot"></p></div>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <input type="hidden" name="plot_id">
+                <label class="field full"><span>Rice variety</span><input name="variety" maxlength="150" placeholder="e.g. NSIC Rc 222"></label>
+                <label class="field"><span>Planting date</span><input type="date" name="planted_date" required></label>
+                <label class="field"><span>Expected harvest</span><input type="date" name="expected_harvest_date"></label>
+                <label class="field full"><span>Notes</span><textarea name="notes" placeholder="Optional"></textarea></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Save planting</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/shell.js"></script>
+    <script src="../assets/js/plot-view.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

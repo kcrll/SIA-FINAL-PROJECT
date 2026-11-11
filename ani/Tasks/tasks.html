@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tasks · Ani</title>
+    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="../Chat/chat.css">
+</head>
+<body data-page="tasks">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+        <header class="page-head">
+            <div>
+                <h1>Tasks</h1>
+                <p>Plan and tick off the work on your plots.</p>
+            </div>
+        </header>
+
+        <section class="card">
+            <div class="card-head"><h2>Schedule a task</h2></div>
+            <form id="taskForm" class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end">
+                <label class="field"><span>Plot</span><select name="plot_id" id="plotSelect" required></select></label>
+                <label class="field"><span>Task</span>
+                    <select name="task_type">
+                        <option value="Water">Watering</option>
+                        <option value="Fertilize">Fertilizing</option>
+                        <option value="Weed">Weeding</option>
+                        <option value="Pest Control">Pest control</option>
+                        <option value="Inspect">Inspection</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+                <label class="field"><span>Date</span><input type="date" name="task_date" required></label>
+                <button type="submit" class="btn"><i data-icon="plus"></i> Add task</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <div class="card-head">
+                <div>
+                    <h2>All tasks</h2>
+                    <p>Pending tasks come first, soonest at the top.</p>
+                </div>
+                <div class="chips" id="filter"></div>
+            </div>
+            <div id="loadError" class="error-box" hidden></div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead><tr><th>Task</th><th>Plot</th><th>Due</th><th></th></tr></thead>
+                    <tbody id="taskBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/shell.js"></script>
+    <script src="tasks.js"></script>
+    <script src="../Chat/chat.js"></script>
+</body>
+</html>

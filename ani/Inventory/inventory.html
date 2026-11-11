@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventory · Ani</title>
+    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="inventory.css">
+    <link rel="stylesheet" href="../Chat/chat.css">
+</head>
+<body data-page="inventory">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+        <header class="page-head">
+            <div>
+                <h1>Inventory</h1>
+                <p>Supplies on hand and everything you have harvested.</p>
+            </div>
+            <div style="display:flex;gap:10px">
+                <button type="button" class="btn" id="addItemBtn"><i data-icon="plus"></i> Add supply</button>
+                <button type="button" class="btn" id="addHarvestBtn" hidden><i data-icon="plus"></i> Log harvest</button>
+            </div>
+        </header>
+
+        <div class="tabs" role="tablist">
+            <button type="button" class="tab active" data-tab="supplies" role="tab"><i data-icon="package" data-size="17"></i> Supplies</button>
+            <button type="button" class="tab" data-tab="harvests" role="tab"><i data-icon="wheat" data-size="17"></i> Harvests</button>
+        </div>
+
+        <div id="loadError" class="error-box" hidden></div>
+
+        <!-- Supplies -->
+        <div id="suppliesPanel">
+            <section class="stats" id="supplyStats"></section>
+
+            <section class="card">
+                <div class="toolbar">
+                    <div class="chips" id="categoryFilter"></div>
+                    <label class="search">
+                        <i data-icon="search" data-size="16"></i>
+                        <input class="input" type="search" id="search" placeholder="Search supplies" aria-label="Search supplies">
+                    </label>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Item</th><th>Category</th><th>In stock</th><th>Purchased</th><th></th></tr></thead>
+                        <tbody id="supplyBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-head"><div><h2>Recent usage</h2><p>The last 20 times stock was used.</p></div></div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Date</th><th>Item</th><th>Used</th><th>Plot</th><th>Purpose</th></tr></thead>
+                        <tbody id="usageBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Harvests -->
+        <div id="harvestsPanel" hidden>
+            <section class="stats" id="harvestStats"></section>
+            <section class="card">
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Date</th><th>Plot</th><th class="num">Quantity</th><th>Notes</th><th></th></tr></thead>
+                        <tbody id="harvestBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Add / edit supply -->
+    <div class="modal" id="itemModal" hidden>
+        <form class="modal-card" id="itemForm" role="dialog" aria-modal="true" aria-labelledby="itemTitle">
+            <div class="modal-head">
+                <h2 id="itemTitle">Add supply</h2>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <input type="hidden" name="id">
+                <label class="field full"><span>Item name</span><input name="item_name" required maxlength="150" placeholder="e.g. NSIC Rc 222 seeds"></label>
+                <label class="field"><span>Category</span>
+                    <select name="category">
+                        <option>Rice Seeds</option><option>Fertilizers</option><option>Pesticides</option><option>Other Supplies</option>
+                    </select>
+                </label>
+                <label class="field"><span>Unit</span>
+                    <select name="unit">
+                        <option>kg</option><option>bags</option><option>liters</option><option>bottles</option><option>grams</option><option>pcs</option><option>packs</option>
+                    </select>
+                </label>
+                <label class="field"><span>Quantity in stock</span><input type="number" name="quantity" min="0" step="0.01" required></label>
+                <label class="field"><span>Low-stock alert at</span><input type="number" name="threshold" min="0" step="0.01" value="0"></label>
+                <label class="field"><span>Purchase date</span><input type="date" name="purchase_date" required></label>
+                <label class="field"><span>Cost (₱)</span><input type="number" name="cost" min="0" step="0.01" placeholder="Optional"></label>
+                <label class="field full"><span>Notes</span><textarea name="notes" placeholder="Optional"></textarea></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Use stock -->
+    <div class="modal" id="useModal" hidden>
+        <form class="modal-card" id="useForm" role="dialog" aria-modal="true" aria-labelledby="useTitle">
+            <div class="modal-head">
+                <div><h2 id="useTitle">Use stock</h2><p id="useSub"></p></div>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <input type="hidden" name="item_id">
+                <label class="field"><span id="useQtyLabel">Quantity used</span><input type="number" name="quantity_used" min="0.01" step="0.01" required></label>
+                <label class="field"><span>Date</span><input type="date" name="used_date" required></label>
+                <label class="field full"><span>Applied to</span><select name="plot_id" id="usePlot"></select></label>
+                <label class="field full"><span>Purpose</span><input name="purpose" maxlength="255" placeholder="e.g. Top dressing"></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Record usage</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Log / edit harvest -->
+    <div class="modal" id="harvestModal" hidden>
+        <form class="modal-card" id="harvestForm" role="dialog" aria-modal="true" aria-labelledby="harvestTitle">
+            <div class="modal-head">
+                <h2 id="harvestTitle">Log harvest</h2>
+                <button type="button" class="modal-x" data-close aria-label="Close"><i data-icon="x"></i></button>
+            </div>
+            <div class="modal-body form-grid">
+                <input type="hidden" name="id">
+                <label class="field full"><span>Plot</span><select name="plot_id" id="harvestPlot" required></select></label>
+                <label class="field"><span>Harvest date</span><input type="date" name="harvest_date" required></label>
+                <label class="field"><span>Quantity (kg)</span><input type="number" name="quantity" min="0.01" step="0.01" required></label>
+                <label class="field full"><span>Notes</span><input name="notes" maxlength="255" placeholder="Optional"></label>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/shell.js"></script>
+    <script src="inventory.js"></script>
+    <script src="../Chat/chat.js"></script>
+</body>
+</html>

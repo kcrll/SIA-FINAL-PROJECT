@@ -1,0 +1,20 @@
+.tabs { display: inline-flex; gap: 4px; margin-bottom: 20px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 9px;
+    background: none;
+    color: var(--ink-2);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tab:hover { color: var(--green-800); }
+.tab.active { background: var(--green-800); color: #fff; }
+
+#suppliesPanel .card + .card { margin-top: 18px; }

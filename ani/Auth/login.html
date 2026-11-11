@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in · Ani</title>
+    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body data-page="auth">
+    <div class="auth">
+        <aside class="auth-side">
+            <div>
+                <a class="brand" href="../landing.html"><i data-icon="leaf" data-size="26"></i><span>Ani</span></a>
+                <h2>Welcome back to your fields.</h2>
+                <p>Check your plots, tick off today's work and see how the harvest is coming along.</p>
+            </div>
+            <img src="../assets/images/Palay.png" alt="">
+        </aside>
+
+        <main class="auth-main">
+            <form class="auth-card" id="loginForm" novalidate>
+                <h1>Log in</h1>
+                <p class="lead">Enter your username and password.</p>
+                <div class="error" id="formError" role="alert" hidden></div>
+                <div class="form-grid">
+                    <label class="field"><span>Username</span><input name="username" autocomplete="username" required autofocus></label>
+                    <label class="field"><span>Password</span><input type="password" name="password" autocomplete="current-password" required></label>
+                </div>
+                <button type="submit" class="btn btn-block">Log in</button>
+                <p class="switch">New to Ani? <a href="register.html">Create an account</a></p>
+            </form>
+        </main>
+    </div>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calendar · Ani</title>
+    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="../Chat/chat.css">
+</head>
+<body data-page="calendar">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+        <header class="page-head">
+            <div>
+                <h1>Calendar</h1>
+                <p>Tasks, expected harvests and recorded harvests at a glance.</p>
+            </div>
+        </header>
+
+        <div class="cal-layout">
+            <section class="card">
+                <div class="cal-toolbar">
+                    <h2 id="monthLabel"></h2>
+                    <div class="cal-nav">
+                        <button type="button" class="btn btn-ghost btn-sm" id="todayBtn">Today</button>
+                        <button type="button" class="btn btn-ghost btn-sm" id="prevBtn" aria-label="Previous month"><i data-icon="left" data-size="16"></i></button>
+                        <button type="button" class="btn btn-ghost btn-sm" id="nextBtn" aria-label="Next month"><i data-icon="right" data-size="16"></i></button>
+                    </div>
+                </div>
+
+                <div id="loadError" class="error-box" hidden></div>
+                <div class="cal-grid cal-weekdays" aria-hidden="true">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+                <div class="cal-grid" id="calGrid"></div>
+
+                <div class="legend">
+                    <span><i class="dot task"></i> Task</span>
+                    <span><i class="dot expected"></i> Expected harvest</span>
+                    <span><i class="dot harvest"></i> Harvest recorded</span>
+                </div>
+            </section>
+
+            <aside class="card day-panel">
+                <div class="card-head">
+                    <div>
+                        <h2 id="dayTitle">Select a day</h2>
+                        <p id="daySub"></p>
+                    </div>
+                </div>
+                <ul class="day-list" id="dayList"></ul>
+                <a class="btn btn-soft btn-block" id="addTaskLink" href="../Tasks/tasks.html">Schedule a task</a>
+            </aside>
+        </div>
+    </main>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/shell.js"></script>
+    <script src="calendar.js"></script>
+    <script src="../Chat/chat.js"></script>
+</body>
+</html>
