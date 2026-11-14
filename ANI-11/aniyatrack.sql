@@ -56,7 +56,7 @@ CREATE TABLE tasks (
     plot_id INT UNSIGNED NOT NULL,
     task_date DATE NOT NULL,
     task_type ENUM('Water', 'Fertilize', 'Weed', 'Pest Control', 'Inspect', 'Other')
-        NOT NULL DEFAULT 'Water',
+        DEFAULT NULL,
     done TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_watering_plot
