@@ -1,0 +1,238 @@
+/* Ani log in / create account: one card, a green panel slides between the two forms */
+
+.auth-page {
+    --auth-cream: #f6f1e4;
+    --auth-green: #1b4d2e;
+    --auth-deep: #12301f;
+    --auth-gold: #d9a63b;
+    --auth-line: #e6dcc3;
+    --auth-ink: #1c2a22;
+    --auth-muted: #6b776f;
+    --slide: .7s cubic-bezier(.65, .05, .25, 1);
+    margin: 0;
+    min-height: 100vh;
+    background: var(--auth-cream);
+    color: var(--auth-ink);
+    font-size: 15px;
+}
+
+.auth-scene {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 36px 20px 90px;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Hills along the bottom of the page */
+.auth-scene::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    bottom: -25px;
+    height: clamp(90px, 15vw, 180px);
+    background: url("../assets/images/ground.png") center bottom / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+/* ---------- Card ---------- */
+.auth-card {
+    position: relative;
+    width: min(940px, 100%);
+    min-height: 620px;
+    overflow: hidden;
+    border-radius: 28px;
+    background: #fffdf8;
+    box-shadow: 0 24px 60px rgba(18, 48, 31, .16), 0 2px 6px rgba(18, 48, 31, .06);
+}
+
+/* ---------- Form panes ---------- */
+.auth-pane {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    padding: 36px clamp(28px, 4.4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform var(--slide), opacity .35s ease;
+}
+.pane-login { z-index: 2; }
+.pane-register { z-index: 1; opacity: 0; }
+
+.auth-card[data-mode="register"] .pane-login { transform: translateX(100%); opacity: 0; }
+.auth-card[data-mode="register"] .pane-register { transform: translateX(100%); opacity: 1; z-index: 3; }
+
+.auth-brand {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    color: var(--auth-green);
+    font: 700 20px/1 var(--display, Georgia, serif);
+    text-decoration: none;
+}
+.auth-brand:hover { color: var(--auth-deep); }
+
+.auth-pane h1 {
+    margin: 0 0 6px;
+    color: var(--auth-deep);
+    font: 700 34px/1.1 var(--display, Georgia, serif);
+    letter-spacing: -.01em;
+}
+.auth-sub { margin: 0 0 22px; color: var(--auth-muted); font-size: 14.5px; }
+
+.auth-pane form { display: flex; flex-direction: column; }
+
+.auth-pane label {
+    margin: 0 0 6px 1px;
+    color: var(--auth-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.auth-pane input {
+    display: block;
+    width: 100%;
+    height: 46px;
+    margin: 0 0 14px;
+    padding: 0 14px;
+    border: 1px solid var(--auth-line);
+    border-radius: 12px;
+    background: #fbf9f3;
+    color: var(--auth-ink);
+    font: inherit;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.auth-pane input:focus {
+    outline: none;
+    border-color: var(--auth-green);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(217, 166, 59, .35);
+}
+
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-pair > div { min-width: 0; }
+
+.auth-card .auth-submit {
+    width: 100%;
+    height: 50px;
+    margin-top: 6px;
+    border-radius: 12px;
+    background: var(--auth-green);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    transition: background .2s, transform .12s;
+}
+.auth-card .auth-submit:hover { background: var(--auth-deep); box-shadow: 0 8px 18px rgba(18, 48, 31, .25); }
+.auth-card .auth-submit:active { transform: scale(.98); }
+.auth-card .auth-submit:disabled { opacity: .75; cursor: progress; }
+
+.auth-mobile-switch { display: none; margin: 18px 0 0; text-align: center; color: var(--auth-muted); }
+.auth-card .link-btn {
+    display: inline;
+    height: auto;
+    padding: 0;
+    background: none;
+    color: var(--auth-green);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    box-shadow: none;
+}
+.auth-card .link-btn:hover { background: none; color: var(--auth-deep); box-shadow: none; }
+
+/* ---------- Sliding panel ---------- */
+.auth-overlay {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    background:
+        radial-gradient(90% 55% at 0% 0%, rgba(217, 166, 59, .22), transparent 70%),
+        linear-gradient(165deg, #236039, var(--auth-deep));
+    color: #fff;
+    transition: transform var(--slide);
+}
+.auth-card[data-mode="register"] .auth-overlay { transform: translateX(-100%); }
+
+/* The palay grows up from the bottom of the panel */
+.auth-overlay::after {
+    content: "";
+    position: absolute;
+    right: -14%;
+    bottom: -6%;
+    width: 100%;
+    height: 62%;
+    background: url("../assets/images/Palay.png") right bottom / contain no-repeat;
+    pointer-events: none;
+}
+
+.overlay-copy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 64px clamp(28px, 4.4vw, 56px) 0;
+    transition: opacity .4s ease, transform var(--slide);
+}
+.overlay-copy h2 { margin: 0 0 12px; font: 700 32px/1.1 var(--display, Georgia, serif); letter-spacing: -.01em; }
+.overlay-copy p { margin: 0 0 26px; max-width: 22em; color: rgba(255, 255, 255, .82); line-height: 1.55; }
+
+.auth-card .overlay-btn {
+    height: 46px;
+    padding: 0 26px;
+    border: 2px solid rgba(255, 255, 255, .85);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    transition: background .2s, color .2s, transform .12s;
+}
+.auth-card .overlay-btn:hover { background: #fff; color: var(--auth-deep); box-shadow: none; }
+.auth-card .overlay-btn:active { transform: scale(.97); }
+
+/* Message for the current mode only; the other waits just off to the side */
+.copy-register { opacity: 0; transform: translateX(-24px); }
+.auth-card[data-mode="register"] .copy-login { opacity: 0; transform: translateX(24px); }
+.auth-card[data-mode="register"] .copy-register { opacity: 1; transform: none; }
+
+/* ---------- Narrow screens: one form at a time, switch with the link ---------- */
+@media (max-width: 760px) {
+    .auth-scene { padding: 20px 14px 90px; align-items: start; }
+    .auth-card { min-height: 0; border-radius: 22px; }
+    .auth-overlay { display: none; }
+
+    .auth-pane,
+    .auth-card[data-mode="register"] .pane-login,
+    .auth-card[data-mode="register"] .pane-register {
+        position: static;
+        width: 100%;
+        padding: 30px 22px 26px;
+        transform: none;
+        opacity: 1;
+    }
+    .auth-card[data-mode="login"] .pane-register,
+    .auth-card[data-mode="register"] .pane-login { display: none; }
+
+    .auth-mobile-switch { display: block; }
+}
+@media (max-width: 420px) {
+    .field-pair { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-pane, .auth-overlay, .overlay-copy { transition-duration: .01ms; }
+}
