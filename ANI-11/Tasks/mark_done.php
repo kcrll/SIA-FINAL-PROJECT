@@ -12,7 +12,7 @@ if (!$id) {
 }
 
 $s = $pdo->prepare(
-    'UPDATE watering_tasks SET done=?
+    'UPDATE tasks SET done=?
      WHERE id=?
        AND plot_id IN (SELECT id FROM plots WHERE user_id <=> COALESCE(?, user_id))'
 );

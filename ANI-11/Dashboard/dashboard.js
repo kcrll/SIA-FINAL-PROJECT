@@ -25,11 +25,40 @@ function taskItem(t) {
     const el = cloneTemplate('tpl-task-item');
     const crop = t.crop_name ? ` (${t.crop_name})` : '';
     fill(el, {
-        label: `${t.task_type || 'Water'} — ${t.plot_name}${crop}`,
+        label: `${t.task_type || 'Task'} — ${t.plot_name}${crop}`,
         date: t.task_date
     });
-    setBadge(el, 'state', Number(t.done) ? 'Done' : 'Pending');
+    const info = dueInfo(t.task_date, t.done);
+    setBadge(el, 'state', info.label, 'due-' + info.key);
     return el;
+}
+
+// Overdue / today / next 3 days, each linking to the matching Tasks filter
+function deadlineStrip(tasks) {
+    const n = { overdue: 0, today: 0, next3: 0 };
+    tasks.forEach(t => {
+        if (Number(t.done)) return;
+        const days = daysUntil(t.task_date);
+        if (days < 0) n.overdue++;
+        else if (days === 0) n.today++;
+        else if (days <= 3) n.next3++;
+    });
+
+    const chip = (key, label) => {
+        const a = document.createElement('a');
+        a.className = 'chip' + (key === 'overdue' && n.overdue ? ' alert' : '');
+        a.href = urlFor('Tasks/tasks.html?filter=' + key);
+        a.append(label + ' ');
+        const b = document.createElement('b');
+        b.textContent = n[key];
+        a.append(b);
+        return a;
+    };
+
+    document.getElementById('deadlineStrip').replaceChildren(
+        chip('overdue', 'Overdue'), chip('today', 'Due today'), chip('next3', 'Next 3 days')
+    );
+    return n.overdue;
 }
 
 function harvestItem(h) {
@@ -128,6 +157,10 @@ async function loadDashboard() {
         document.getElementById('statRice').textContent = d.stats.rice;
         document.getElementById('statTasks').textContent = d.stats.tasks_pending;
         document.getElementById('statHarvests').textContent = d.stats.harvests_week;
+
+        const overdue = deadlineStrip(d.tasks);
+        document.getElementById('statOverdue').textContent = overdue;
+        document.getElementById('overdueTile').classList.toggle('is-clear', overdue === 0);
 
         listOrEmpty(plotGrid, plots.map(overviewCard), 'No plots yet.');
         listOrEmpty(document.getElementById('taskList'), d.tasks.map(taskItem), 'No tasks yet.');

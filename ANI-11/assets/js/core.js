@@ -68,6 +68,28 @@ function today() {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+// Days from today to a YYYY-MM-DD date (negative = already past), by local calendar day
+function daysUntil(dateStr) {
+    const [y, m, d] = String(dateStr).slice(0, 10).split('-').map(Number);
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((new Date(y, m - 1, d) - start) / 864e5);
+}
+
+// Deadline label for a task: { key, label, days }
+// key: overdue | today | tomorrow | soon (2-3 days) | week (4-7) | later | done
+function dueInfo(dateStr, done) {
+    if (Number(done)) return { key: 'done', label: 'Done', days: null };
+
+    const n = daysUntil(dateStr);
+    const plural = x => `${x} day${x === 1 ? '' : 's'}`;
+
+    if (n < 0) return { key: 'overdue', label: `Overdue by ${plural(-n)}`, days: n };
+    if (n === 0) return { key: 'today', label: 'Due today', days: n };
+    if (n === 1) return { key: 'tomorrow', label: 'Due tomorrow', days: n };
+    return { key: n <= 3 ? 'soon' : n <= 7 ? 'week' : 'later', label: `Due in ${n} days`, days: n };
+}
+
 function setDefaultDates() {
     document.querySelectorAll('input[type=date]').forEach(x => {
         if (!x.value) x.value = today();
@@ -141,7 +163,7 @@ function plotCard(p) {
     const links = [
         'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
-        ROOT + 'assets/css/theme.css?v=1'
+        ROOT + 'assets/css/theme.css?v=4'
     ];
     links.forEach(href => {
         if (document.querySelector(`link[href="${href}"]`)) return;
@@ -400,4 +422,19 @@ function plotCard(p) {
 
     if (document.body) start();
     else document.addEventListener('DOMContentLoaded', start);
+})();
+
+/* Notification bell + deadline badges (notifications.js, notify.css) */
+(function () {
+    if (page === 'auth') return;
+
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = ROOT + 'assets/css/notify.css?v=1';
+    document.head.appendChild(css);
+
+    const js = document.createElement('script');
+    js.src = ROOT + 'assets/js/notifications.js?v=1';
+    js.defer = true;
+    document.head.appendChild(js);
 })();

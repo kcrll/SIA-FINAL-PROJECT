@@ -12,7 +12,7 @@ if (!$id) {
 
 $pdo
     ->prepare(
-        'DELETE FROM watering_tasks
+        'DELETE FROM tasks
          WHERE id=?
            AND plot_id IN (SELECT id FROM plots WHERE user_id <=> COALESCE(?, user_id))'
     )

@@ -46,6 +46,11 @@
                     <span>Harvests this week</span>
                     <b id="statHarvests">–</b>
                 </div>
+
+                <div class="stat stat-red is-clear" id="overdueTile">
+                    <span>Overdue tasks</span>
+                    <b id="statOverdue">–</b>
+                </div>
             </div>
 
             <div class="dash-grid">
@@ -54,8 +59,9 @@
                     <div class="plot-grid scroll-list" id="plotGrid"></div>
                 </section>
 
-                <section class="card dash-watering">
+                <section class="card dash-tasks">
                     <h2>Tasks</h2>
+                    <div class="chip-row" id="deadlineStrip" aria-label="Task deadlines"></div>
                     <div id="taskList" class="scroll-list"></div>
                 </section>
 
@@ -135,7 +141,7 @@
                 <span data-field="label"></span>
                 <small class="row-sub" data-field="date"></small>
             </span>
-            <span class="badge" data-badge="state"></span>
+            <span class="due" data-badge="state"></span>
         </div>
     </template>
 

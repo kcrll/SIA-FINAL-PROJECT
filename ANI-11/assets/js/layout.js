@@ -24,6 +24,14 @@ function setupSidebar(slot) {
     const adminLink = slot.querySelector('#adminSidebarLink');
     if (adminLink && role === 'admin') adminLink.classList.add('show');
 
+    // Footer at the bottom of the sidebar: avatar, name, role
+    const nameEl = slot.querySelector('#sidebarName');
+    if (nameEl && name) {
+        nameEl.textContent = name;
+        slot.querySelector('#sidebarAvatar').textContent = name.trim().charAt(0).toUpperCase();
+        slot.querySelector('#sidebarRole').textContent = role === 'admin' ? 'Administrator' : 'Farmer';
+    }
+
     const userBox = document.getElementById('sidebarUser');
     if (name && userBox) {
         const tag = role === 'admin' ? '<span class="admin-tag">Admin</span>' : '';
@@ -75,7 +83,7 @@ async function loadSidebar() {
 }
 
 document.addEventListener('click', async e => {
-    if (!e.target.closest('#logoutBtn')) return;
+    if (!e.target.closest('#logoutBtn, #sidebarLogout')) return;
     e.preventDefault();
 
     try { await post('Auth/logout.php', {}); } catch (err) { /* already logged out */ }

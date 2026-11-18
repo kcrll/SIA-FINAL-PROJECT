@@ -5,31 +5,23 @@ require __DIR__ . '/../config.php';
 $d = input();
 
 $name = required($d, 'name');
-$crop = required($d, 'crop_type');
 $status = $d['status'] ?? 'Available';
 
 if ($status === 'Occupied') $status = 'Planted';
-if (
-    $crop !== 'Rice' ||
-    !in_array(
-        $status,
-        ['Available', 'Planted', 'Occupied', 'Maintenance'],
-        true
-    )
-) {
+
+if (!in_array($status, ['Available', 'Planted', 'Maintenance'], true)) {
     json_error('Invalid plot data.');
 }
 
 try {
     $s = $pdo->prepare(
-        'INSERT INTO plots(user_id,name,crop_type,status)
-         VALUES(?,?,?,?)'
+        'INSERT INTO plots(user_id,name,status)
+         VALUES(?,?,?)'
     );
 
     $s->execute([
         uid(),
         $name,
-        $crop,
         $status
     ]);
 

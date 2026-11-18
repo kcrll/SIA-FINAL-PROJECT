@@ -9,7 +9,7 @@
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 30px;
 }
@@ -62,7 +62,7 @@
 
 /* Lists scroll after about four rows */
 .dash-plots,
-.dash-watering {
+.dash-tasks {
     --scroll-height: 260px;
 }
 
@@ -184,4 +184,16 @@
     .dash-grid .card {
         padding: 16px;
     }
+}
+
+/* Overdue tile: red while something is late, calm green when nothing is */
+.stats .stat.stat-red::before { content: "\f071"; background: var(--red-100, #fbe7e3); color: var(--red-700, #b0402f); }
+.stats .stat.stat-red.is-clear::before { content: "\f00c"; background: var(--green-100, #e3f0e5); color: var(--green-700, #236039); }
+.stats .stat.stat-red:not(.is-clear) b { color: var(--red-700, #b0402f); }
+
+@media (max-width: 1180px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+    .stats { grid-template-columns: 1fr; }
 }

@@ -28,12 +28,12 @@ $s->execute([sid()]);
 $plots = $s->fetchAll(PDO::FETCH_ASSOC);
 
 $s = $pdo->prepare(
-    "SELECT p.name plot_name, w.task_date, w.done
-     FROM watering_tasks w
-     JOIN plots p ON p.id=w.plot_id
-     WHERE w.task_date BETWEEN ? AND DATE_ADD(?, INTERVAL 7 DAY)
+    "SELECT p.name plot_name, t.task_date, t.done
+     FROM tasks t
+     JOIN plots p ON p.id=t.plot_id
+     WHERE t.task_date BETWEEN ? AND DATE_ADD(?, INTERVAL 7 DAY)
        AND p.user_id <=> COALESCE(?, p.user_id)
-     ORDER BY w.task_date"
+     ORDER BY t.task_date"
 );
 $s->execute([$today, $today, sid()]);
 $tasks = $s->fetchAll(PDO::FETCH_ASSOC);
@@ -232,7 +232,7 @@ if (defined('ANTHROPIC_API_KEY') && ANTHROPIC_API_KEY !== '') {
     $snapshot = json_encode([
         'today' => $today,
         'plots' => $plots,
-        'watering_tasks_next_7_days' => $tasks,
+        'tasks_next_7_days' => $tasks,
         'recent_harvests_kg_or_units' => $harvests,
         'seeds' => $seeds,
         'finance_totals' => $fin,

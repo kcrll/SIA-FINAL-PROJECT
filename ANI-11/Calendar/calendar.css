@@ -108,7 +108,7 @@
     font-weight: 700;
 }
 
-.event.watering {
+.event.task {
     background: #e3efd8;
     color: #4d7d36;
 }
@@ -141,7 +141,7 @@
     margin-right: 7px;
 }
 
-.watering-dot {
+.task-dot {
     background: #6d9e4c;
 }
 

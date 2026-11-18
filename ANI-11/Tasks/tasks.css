@@ -91,3 +91,7 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Overdue rows get a red edge; the empty state spans the table */
+tbody tr.row-overdue td:first-child { box-shadow: inset 3px 0 0 var(--red-700, #b0402f); }
+td.empty { padding: 28px 18px; text-align: center; color: var(--muted, #78857c); }

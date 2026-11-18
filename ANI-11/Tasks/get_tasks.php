@@ -3,14 +3,16 @@
 require __DIR__ . '/../config.php';
 
 $sql = "SELECT
-            w.*,
+            t.*,
             p.name AS plot_name,
             p.crop_type
-        FROM watering_tasks w
-        JOIN plots p ON p.id = w.plot_id
+        FROM tasks t
+        JOIN plots p ON p.id = t.plot_id
         WHERE p.crop_type = 'Rice'
           AND p.user_id <=> COALESCE(?, p.user_id)
-        ORDER BY w.task_date DESC, w.id DESC";
+        ORDER BY t.done ASC,
+                 CASE WHEN t.done = 0 THEN t.task_date END ASC,
+                 t.task_date DESC, t.id DESC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute([sid()]);

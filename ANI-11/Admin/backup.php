@@ -9,7 +9,7 @@ $filename = "aniyatrack_backup_{$timestamp}.sql";
 $tables = [
     'plots',
     'plantings',
-    'watering_tasks',
+    'tasks',
     'harvests',
     'seeds',
     'finance_transactions',

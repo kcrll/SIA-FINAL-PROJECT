@@ -6,7 +6,6 @@ $d = input();
 
 $plot = (int)($d['plot_id'] ?? 0);
 $planting_id = (int)($d['planting_id'] ?? 0);
-$crop = 'Rice';
 $variety = trim((string)($d['variety'] ?? ''));
 $planted = required($d, 'planted_date');
 $expected = trim((string)($d['expected_harvest_date'] ?? ''));
@@ -17,7 +16,7 @@ if (!$plot) {
 }
 
 if (!own_plot($pdo, $plot)) {
-    json_error('Invalid rice plot.');
+    json_error('Invalid plot.');
 }
 
 $pdo->beginTransaction();
@@ -26,8 +25,7 @@ try {
     if ($planting_id) {
         $s = $pdo->prepare(
             'UPDATE plantings
-             SET crop_name=?,
-                 variety=?,
+             SET variety=?,
                  planted_date=?,
                  expected_harvest_date=?,
                  notes=?
@@ -35,7 +33,6 @@ try {
         );
 
         $s->execute([
-            $crop,
             $variety ?: null,
             $planted,
             $expected ?: null,
@@ -55,18 +52,16 @@ try {
         $s = $pdo->prepare(
             'INSERT INTO plantings(
                 plot_id,
-                crop_name,
                 variety,
                 planted_date,
                 expected_harvest_date,
                 notes
             )
-            VALUES(?,?,?,?,?,?)'
+            VALUES(?,?,?,?,?)'
         );
 
         $s->execute([
             $plot,
-            $crop,
             $variety ?: null,
             $planted,
             $expected ?: null,
@@ -77,11 +72,7 @@ try {
     }
 
     $pdo
-        ->prepare(
-            "UPDATE plots
-             SET status='Planted'
-             WHERE id=?"
-        )
+        ->prepare("UPDATE plots SET status='Planted' WHERE id=?")
         ->execute([$plot]);
 
     $pdo->commit();
@@ -95,7 +86,5 @@ try {
         $pdo->rollBack();
     }
 
-    json_error(
-        'Unable to add planting.'
-    );
+    json_error('Unable to add planting.');
 }

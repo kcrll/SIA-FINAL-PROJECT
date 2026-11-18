@@ -21,9 +21,9 @@ $stats = [
     ),
     'tasks_pending' => scalar(
         $pdo,
-        "SELECT COUNT(*) FROM watering_tasks w
-         JOIN plots p ON p.id=w.plot_id
-         WHERE w.done=0 AND p.crop_type='Rice'
+        "SELECT COUNT(*) FROM tasks t
+         JOIN plots p ON p.id=t.plot_id
+         WHERE t.done=0 AND p.crop_type='Rice'
            AND p.user_id <=> COALESCE(?, p.user_id)",
         [$uid]
     ),
@@ -61,17 +61,17 @@ $plots = $s->fetchAll();
 // Every task, pending first, then by date
 $s = $pdo->prepare(
     "SELECT
-        w.*,
+        t.*,
         p.name AS plot_name,
         p.crop_type,
         pl.crop_name
-     FROM watering_tasks w
-     JOIN plots p ON p.id=w.plot_id
+     FROM tasks t
+     JOIN plots p ON p.id=t.plot_id
      LEFT JOIN plantings pl
         ON pl.id=(SELECT MAX(id) FROM plantings WHERE plot_id=p.id)
      WHERE p.crop_type='Rice'
        AND p.user_id <=> COALESCE(?, p.user_id)
-     ORDER BY w.done, w.task_date, w.id"
+     ORDER BY t.done, t.task_date, t.id"
 );
 $s->execute([$uid]);
 $tasks = $s->fetchAll();

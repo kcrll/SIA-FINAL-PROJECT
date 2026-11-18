@@ -50,7 +50,7 @@ CREATE TABLE plantings (
 ) ENGINE=InnoDB;
 
 
--- 4. WATERING TASKS
+-- 4. TASKS
 CREATE TABLE tasks (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     plot_id INT UNSIGNED NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE tasks (
         DEFAULT NULL,
     done TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_watering_plot
+    CONSTRAINT fk_task_plot
         FOREIGN KEY (plot_id) REFERENCES plots(id)
         ON DELETE CASCADE,
     INDEX idx_task_date_done (task_date, done)

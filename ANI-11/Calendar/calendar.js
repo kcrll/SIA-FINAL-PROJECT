@@ -179,8 +179,8 @@ function renderDayTasks(date) {
     });
 
     const events = calendarEvents.filter(e => e.date === date);
-    const tasks = events.filter(e => e.type === 'watering');
-    const others = events.filter(e => e.type !== 'watering');
+    const tasks = events.filter(e => e.type === 'task');
+    const others = events.filter(e => e.type !== 'task');
     const remaining = tasks.filter(e => !isDone(e)).length;
 
     document.getElementById('selectedDateTitle').textContent = `Tasks for ${pretty}`;
@@ -209,13 +209,13 @@ function renderDayTasks(date) {
     );
 }
 
-/* ---------- Ticking a watering task ---------- */
+/* ---------- Ticking a task ---------- */
 
-async function toggleWateringTask(id, done) {
+async function toggleTask(id, done) {
     try {
         const result = await post('Tasks/mark_done.php', { id, done: done ? 1 : 0 });
 
-        const event = calendarEvents.find(e => Number(e.id) === Number(id) && e.type === 'watering');
+        const event = calendarEvents.find(e => Number(e.id) === Number(id) && e.type === 'task');
         if (event) event.done = done ? 1 : 0;
 
         renderDayTasks(selectedDate);
@@ -229,7 +229,7 @@ async function toggleWateringTask(id, done) {
 
 checklist.addEventListener('change', e => {
     if (e.target.dataset.action !== 'toggle') return;
-    toggleWateringTask(e.target.closest('.checklist-item').dataset.id, e.target.checked);
+    toggleTask(e.target.closest('.checklist-item').dataset.id, e.target.checked);
 });
 
 loadCal();

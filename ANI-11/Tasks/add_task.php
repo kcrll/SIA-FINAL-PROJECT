@@ -6,7 +6,7 @@ $d = input();
 
 $plot = (int)($d['plot_id'] ?? 0);
 $date = required($d, 'task_date');
-$taskType = trim((string)($d['task_type'] ?? 'Water'));
+$taskType = trim((string)($d['task_type'] ?? ''));
 $allowedTypes = ['Water', 'Fertilize', 'Weed', 'Pest Control', 'Inspect', 'Other'];
 
 if (!$plot) {
@@ -14,7 +14,7 @@ if (!$plot) {
 }
 
 if (!in_array($taskType, $allowedTypes, true)) {
-    json_error('Select a valid task type.');
+    json_error('Select a task type.');
 }
 
 if (!own_plot($pdo, $plot)) {
@@ -22,7 +22,7 @@ if (!own_plot($pdo, $plot)) {
 }
 
 $s = $pdo->prepare(
-    'INSERT INTO watering_tasks(plot_id, task_date, task_type) VALUES(?, ?, ?)'
+    'INSERT INTO tasks(plot_id, task_date, task_type) VALUES(?, ?, ?)'
 );
 
 $s->execute([$plot, $date, $taskType]);

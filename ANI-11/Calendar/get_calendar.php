@@ -28,16 +28,16 @@ $end = date('Y-m-d', strtotime('+41 days', strtotime($start)));
 
 $s = $pdo->prepare(
     "SELECT
-        w.id,
-        w.task_date date,
-        'watering' type,
-        w.task_type,
-        CONCAT(w.task_type, ' — ', p.name) title,
+        t.id,
+        t.task_date date,
+        'task' type,
+        t.task_type,
+        CONCAT(COALESCE(t.task_type, 'Task'), ' — ', p.name) title,
         p.crop_type,
-        w.done
-     FROM watering_tasks w
-     JOIN plots p ON p.id=w.plot_id
-     WHERE w.task_date BETWEEN ? AND ?
+        t.done
+     FROM tasks t
+     JOIN plots p ON p.id=t.plot_id
+     WHERE t.task_date BETWEEN ? AND ?
        AND p.crop_type='Rice'
        AND p.user_id <=> COALESCE(?, p.user_id)"
 );

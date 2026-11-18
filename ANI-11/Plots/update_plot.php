@@ -6,18 +6,13 @@ $d = input();
 
 $id = (int)($d['id'] ?? 0);
 $name = required($d, 'name');
-$crop = required($d, 'crop_type');
 $status = required($d, 'status');
 
 if ($status === 'Occupied') $status = 'Planted';
+
 if (
     !$id ||
-    $crop !== 'Rice' ||
-    !in_array(
-        $status,
-        ['Available', 'Planted', 'Occupied', 'Maintenance'],
-        true
-    )
+    !in_array($status, ['Available', 'Planted', 'Maintenance'], true)
 ) {
     json_error('Invalid plot data.');
 }
@@ -29,13 +24,12 @@ if (!own_plot($pdo, $id)) {
 try {
     $s = $pdo->prepare(
         'UPDATE plots
-         SET name=?,crop_type=?,status=?
+         SET name=?,status=?
          WHERE id=? AND user_id <=> COALESCE(?, user_id)'
     );
 
     $s->execute([
         $name,
-        $crop,
         $status,
         $id,
         sid()

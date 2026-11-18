@@ -1,6 +1,6 @@
 # Ani — Agricultural Navigation and Yield Activity Tracker
 
-Ani is a PHP/MySQL web application for tracking rice plots, plantings, watering and farm tasks,
+Ani is a PHP/MySQL web application for tracking rice plots, plantings and farm tasks,
 harvest records, seed & farm supplies inventory, farm finances, calendar dates, and comprehensive **Administrator Management**.
 It includes a built-in chat assistant ("Ask Ani") on every page.
 
@@ -41,7 +41,7 @@ aniADMIN/
 ├── Auth/                   login.html, register.html, auth.js, auth.css + PHP backend
 ├── Dashboard/              index.html, dashboard.js, dashboard.css + PHP backend
 ├── Plots/                  plots.html, plots.js, plots.css + PHP backend
-├── Tasks/                  watering.html, tasks.js, tasks.css + PHP backend
+├── Tasks/                  tasks.html, tasks.js, tasks.css + PHP backend
 ├── Inventory/              inventory.html, inventory.js (tabs), supplies.js, harvest.js + PHP
 ├── Finance/                finance.html, finance.js, finance.css + PHP backend
 ├── Calendar/               calendar.html, calendar.js, calendar.css + PHP backend
