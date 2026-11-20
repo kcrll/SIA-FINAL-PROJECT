@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ani — Log in</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body class="auth-page" data-page="auth">
+    <main class="auth-scene">
+        <div class="auth-card" id="authCard" data-mode="login">
+
+            <!-- Log in -->
+            <section class="auth-pane pane-login" aria-labelledby="login-title">
+                <a class="auth-brand" href="../landing.html" aria-label="Back to the Ani welcome page">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.5 12 13 13 12"/></svg>
+                    Ani
+                </a>
+                <h1 id="login-title">Log in</h1>
+                <p class="auth-sub">Use your Ani username and password.</p>
+
+                <form id="loginForm">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" autocomplete="username" required>
+                    <label for="password">Password</label>
+                    <div class="password-field">
+                        <input type="password" id="password" autocomplete="current-password" required>
+                        <button type="button" class="password-toggle" aria-controls="password" aria-label="Show password" aria-pressed="false">Show</button>
+                    </div>
+                    <button type="submit" class="auth-submit" data-busy="Logging in…">Log in</button>
+                </form>
+
+                <p class="auth-mobile-switch">New to Ani? <button type="button" class="link-btn" data-switch="register">Create an account</button></p>
+            </section>
+
+            <!-- Create account -->
+            <section class="auth-pane pane-register" aria-labelledby="register-title" inert>
+                <a class="auth-brand" href="../landing.html" aria-label="Back to the Ani welcome page">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.5 12 13 13 12"/></svg>
+                    Ani
+                </a>
+                <h1 id="register-title">Create account</h1>
+                <p class="auth-sub">It takes a minute. You can start adding plots right after.</p>
+
+                <form id="registerForm">
+                    <div class="field-pair">
+                        <div>
+                            <label for="reg_first_name">First name</label>
+                            <input type="text" id="reg_first_name" autocomplete="given-name" required>
+                        </div>
+                        <div>
+                            <label for="reg_last_name">Last name</label>
+                            <input type="text" id="reg_last_name" autocomplete="family-name" required>
+                        </div>
+                    </div>
+                    <div class="field-pair">
+                        <div>
+                            <label for="reg_username">Username</label>
+                            <input type="text" id="reg_username" autocomplete="username" required>
+                        </div>
+                        <div>
+                            <label for="reg_phone">Phone number</label>
+                            <input type="tel" id="reg_phone" autocomplete="tel" required>
+                        </div>
+                    </div>
+                    <div class="field-pair">
+                        <div>
+                            <label for="reg_password">Password</label>
+                            <div class="password-field">
+                                <input type="password" id="reg_password" autocomplete="new-password" minlength="6" required>
+                                <button type="button" class="password-toggle" aria-controls="reg_password" aria-label="Show password" aria-pressed="false">Show</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="reg_confirm">Confirm password</label>
+                            <div class="password-field">
+                                <input type="password" id="reg_confirm" autocomplete="new-password" required>
+                                <button type="button" class="password-toggle" aria-controls="reg_confirm" aria-label="Show password" aria-pressed="false">Show</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit" data-busy="Creating account…">Create account</button>
+                </form>
+
+                <p class="auth-mobile-switch">Already have an account? <button type="button" class="link-btn" data-switch="login">Log in</button></p>
+            </section>
+
+            <!-- Sliding panel -->
+            <aside class="auth-overlay">
+                <div class="overlay-copy copy-login">
+                    <h2>New to Ani?</h2>
+                    <p>Create an account to track your rice plots, tasks, and harvests in one place.</p>
+                    <button type="button" class="overlay-btn" data-switch="register">Create account</button>
+                </div>
+                <div class="overlay-copy copy-register" inert>
+                    <h2>Welcome back</h2>
+                    <p>Log in to see which tasks are due and how your plots are doing.</p>
+                    <button type="button" class="overlay-btn" data-switch="login">Log in</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <script src="../assets/js/core.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

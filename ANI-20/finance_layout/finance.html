@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ani — Farm Finance</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="finance.css">
+    <link rel="stylesheet" href="../Chat/chat.css">
+    <script>if (!localStorage.getItem('ani_user')) document.documentElement.style.visibility = 'hidden';</script>
+</head>
+<body data-page="finance">
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="main">
+            <!-- Header with Primary CTA -->
+            <header class="page-header header-top-bar">
+                <div>
+                    <h1>Farm Finance</h1>
+                    <p>Track farm expenses, monitor harvest sales, and review your net profit.</p>
+                </div>
+
+                <div class="header-actions-wrap">
+                    <button type="button" id="openDrawerBtn" class="btn-primary-cta">
+                        <span>＋</span> Record Transaction
+                    </button>
+                    <div class="side-note header-user-wrap">
+                        <div id="sidebarUser" class="side-user" hidden></div>
+                        <a href="#" id="logoutBtn" class="logout-link">🚪 Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Semantic KPI Summary Cards -->
+            <section class="finance-stats-grid">
+                <div class="finance-stat-card stat-expense">
+                    <div class="stat-top">
+                        <span class="stat-label">Total expenses</span>
+                        <span class="stat-icon expense">↘</span>
+                    </div>
+                    <strong id="totalExpenses" class="stat-val">₱0.00</strong>
+                    <span id="expenseSubtext" class="stat-subtext">0 expense entries</span>
+                </div>
+
+                <div class="finance-stat-card stat-revenue">
+                    <div class="stat-top">
+                        <span class="stat-label">Total revenue</span>
+                        <span class="stat-icon revenue">↗</span>
+                    </div>
+                    <strong id="totalRevenue" class="stat-val">₱0.00</strong>
+                    <span id="revenueSubtext" class="stat-subtext">0 harvest sales</span>
+                </div>
+
+                <div class="finance-stat-card stat-net">
+                    <div class="stat-top">
+                        <span class="stat-label">Net profit / loss</span>
+                        <span id="netBadge" class="net-status-pill positive">Profit</span>
+                    </div>
+                    <strong id="netProfit" class="stat-val profit">₱0.00</strong>
+                    <span id="netSubtext" class="stat-subtext">Revenue minus expenses</span>
+                </div>
+            </section>
+
+            <!-- Full-Width Transaction Ledger Card -->
+            <section class="card finance-ledger-card">
+                <div class="ledger-toolbar">
+                    <div class="ledger-title-group">
+                        <h2>Transaction history</h2>
+                        <span id="transactionCount" class="finance-count-badge">0 records</span>
+                    </div>
+
+                    <!-- Type Segmented Tabs -->
+                    <div class="ledger-tabs" role="tablist" aria-label="Filter by transaction type">
+                        <button type="button" class="ledger-tab active" data-type="all">All</button>
+                        <button type="button" class="ledger-tab" data-type="Expense">Expenses</button>
+                        <button type="button" class="ledger-tab" data-type="Income">Income</button>
+                    </div>
+                </div>
+
+                <!-- Integrated Filter & Search Bar -->
+                <div class="ledger-filters-bar">
+                    <div class="ledger-search-wrap">
+                        <span class="search-icon">🔍</span>
+                        <input
+                            type="search"
+                            id="financeSearchInput"
+                            placeholder="Search category, plot, or notes..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="ledger-select-group">
+                        <select id="financeDateFilter" aria-label="Filter by date range">
+                            <option value="all">All time</option>
+                            <option value="week">This week</option>
+                            <option value="month">This month</option>
+                            <option value="year">This year</option>
+                        </select>
+
+                        <select id="financePlotFilter" aria-label="Filter by rice plot">
+                            <option value="all">All plots &amp; Whole Farm</option>
+                        </select>
+
+                        <button type="button" id="clearFinanceFilters" class="finance-btn-clear" hidden>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ledger Table / List -->
+                <div class="ledger-table-wrap">
+                    <div class="ledger-table-head">
+                        <span>Category &amp; Notes</span>
+                        <span>Plot</span>
+                        <span>Date</span>
+                        <span class="align-right">Amount</span>
+                        <span class="align-right">Action</span>
+                    </div>
+                    <div id="financeList" class="finance-list"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Slide-over Backdrop & Drawer for Recording Transactions -->
+    <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+
+    <aside id="transactionDrawer" class="finance-drawer" aria-hidden="true">
+        <div class="drawer-header">
+            <div>
+                <h2>Record transaction</h2>
+                <p>Log an expense or harvest sale to your ledger.</p>
+            </div>
+            <button type="button" id="closeDrawerBtn" class="drawer-close-btn" aria-label="Close drawer">✕</button>
+        </div>
+
+        <form id="financeForm" class="drawer-body">
+            <!-- Segmented Type Switch -->
+            <div class="finance-field full">
+                <label>Transaction Type</label>
+                <div class="segmented-switch">
+                    <label class="segment-option expense-choice active">
+                        <input type="radio" name="transaction_type" value="Expense" checked>
+                        <span>💸 Expense</span>
+                    </label>
+                    <label class="segment-option income-choice">
+                        <input type="radio" name="transaction_type" value="Income">
+                        <span>💰 Income</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Hero Amount Input + Quick-Add Chips -->
+            <div class="finance-field full">
+                <label for="financeAmount">Amount</label>
+                <div class="hero-amount-wrap">
+                    <span class="currency-prefix">₱</span>
+                    <input
+                        type="number"
+                        name="amount"
+                        id="financeAmount"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="0.00"
+                        required
+                    >
+                </div>
+                <div class="quick-amount-chips">
+                    <button type="button" class="quick-amt-btn" data-add="500">+₱500</button>
+                    <button type="button" class="quick-amt-btn" data-add="1000">+₱1,000</button>
+                    <button type="button" class="quick-amt-btn" data-add="5000">+₱5,000</button>
+                    <button type="button" class="quick-amt-btn clear-amt" data-add="0">Clear</button>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="finance-field full">
+                <label id="financeCategoryLabel">Expense Category</label>
+                <div id="financeCategories" class="finance-category-list"></div>
+                <input type="hidden" name="category" id="financeCategory" value="Seed">
+            </div>
+
+            <!-- Plot & Date Side-by-Side -->
+            <div class="finance-field-row">
+                <div class="finance-field">
+                    <label for="financePlot">Rice Plot</label>
+                    <select name="plot_id" id="financePlot" required>
+                        <option value="">Loading plots...</option>
+                    </select>
+                </div>
+
+                <div class="finance-field">
+                    <label for="financeDate">Date</label>
+                    <input type="date" name="transaction_date" id="financeDate" required>
+                </div>
+            </div>
+
+            <!-- Compact Single-Line Notes -->
+            <div class="finance-field full">
+                <label for="financeNotes">Notes <span class="optional-tag">(Optional)</span></label>
+                <input
+                    type="text"
+                    name="notes"
+                    id="financeNotes"
+                    placeholder="e.g., 5 sacks of Urea fertilizer or 40 cavans palay"
+                >
+            </div>
+
+            <!-- Sticky Drawer Footer -->
+            <div class="drawer-footer">
+                <button type="submit" id="submitTxBtn" class="btn-submit-tx expense">
+                    Save Expense
+                </button>
+                <button type="button" id="saveAndAnotherBtn" class="btn-secondary-tx">
+                    Save &amp; Add Another
+                </button>
+            </div>
+        </form>
+    </aside>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Templates -->
+    <template id="tpl-category-chip">
+        <button type="button" class="finance-category">
+            <span data-field="icon"></span>
+            <span data-field="name"></span>
+        </button>
+    </template>
+
+    <template id="tpl-finance-item">
+        <div class="finance-item">
+            <div class="finance-item-main">
+                <div class="tx-icon-badge" data-field="icon"></div>
+                <div class="tx-details">
+                    <div class="finance-item-header">
+                        <strong class="finance-item-title" data-field="category"></strong>
+                        <span class="finance-pill" data-field="type"></span>
+                    </div>
+                    <div class="finance-item-notes" data-field="notes"></div>
+                </div>
+            </div>
+
+            <div class="finance-item-plot">
+                <span class="plot-tag" data-field="plot"></span>
+            </div>
+
+            <div class="finance-item-date" data-field="date"></div>
+
+            <div class="finance-item-amount align-right" data-field="amount"></div>
+
+            <div class="finance-item-actions align-right">
+                <button type="button" class="finance-delete-btn" data-action="delete" title="Delete transaction">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-finance-empty">
+        <div class="finance-empty">
+            <h3>No transactions found</h3>
+            <p>Record a farm expense or harvest sale, or adjust your current filters.</p>
+            <button type="button" class="btn-primary-cta small" data-action="open-drawer">
+                ＋ Record First Transaction
+            </button>
+        </div>
+    </template>
+
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/layout.js"></script>
+    <script src="finance.js"></script>
+    <script src="../Chat/chat.js"></script>
+</body>
+</html>
